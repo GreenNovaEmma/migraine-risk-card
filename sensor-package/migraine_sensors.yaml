@@ -261,19 +261,27 @@ template:
         state: >
           {% set weather_entity = states('input_text.migraine_source_weather') %}
           {% set pres_entity = states('input_text.migraine_source_pressure') %}
+          {% macro to_hpa(v) %}
+            {% set f = v | float(0) %}
+            {% if f >= 25 and f <= 33 %}
+              {{ (f * 33.8639) | round(2) }}
+            {% else %}
+              {{ f }}
+            {% endif %}
+          {% endmacro %}
           {% if pres_entity not in ['not_configured','unknown','unavailable','',none] %}
             {% set v = states(pres_entity) %}
-            {% if v not in ['unknown','unavailable','',none] and v | float(0) > 900 %}
-              {{ v | float(0) }}
+            {% if v not in ['unknown','unavailable','',none] and v | float(0) > 0 %}
+              {{ to_hpa(v) | trim }}
             {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
               {% set wa = state_attr(weather_entity, 'pressure') %}
-              {{ wa | float(0) if wa is number and wa | float(0) > 900 else 0 }}
+              {{ to_hpa(wa) | trim if wa is number else 0 }}
             {% else %}
               {{ 0 }}
             {% endif %}
           {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
             {% set wa = state_attr(weather_entity, 'pressure') %}
-            {{ wa | float(0) if wa is number and wa | float(0) > 900 else 0 }}
+            {{ to_hpa(wa) | trim if wa is number else 0 }}
           {% else %}
             {{ 0 }}
           {% endif %}
