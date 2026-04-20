@@ -103,19 +103,18 @@ If you prefer YAML, click "Show code editor" in the card config panel and paste:
 
 ```yaml
 type: custom:migraine-risk-card
-risk_score_entity: sensor.migraine_risk_score
-risk_level_entity: sensor.migraine_risk_level
-forecast_entity: sensor.migraine_risk_forecast_tomorrow
-factors:
-  pressure_6h: sensor.migraine_pressure_drop_6h
-  pressure_24h: sensor.migraine_pressure_drop_24h
-  humidity: sensor.migraine_factor_humidity
-  temperature: sensor.migraine_factor_temperature
-  temperature_change: sensor.migraine_factor_temperature_change
-  wind: sensor.migraine_factor_wind
-  uv: sensor.migraine_factor_uv_sun
-  thunderstorm: sensor.migraine_factor_thunderstorm_nearby
-  air_quality: sensor.migraine_factor_air_quality
+entity_risk_score: sensor.migraine_risk_score
+entity_risk_level: sensor.migraine_risk_level
+entity_forecast: sensor.migraine_risk_forecast_tomorrow
+entity_pressure_6h: sensor.migraine_pressure_drop_6h
+entity_pressure_24h: sensor.migraine_pressure_drop_24h
+entity_humidity: sensor.migraine_factor_humidity
+entity_temperature: sensor.migraine_factor_temperature
+entity_temperature_change: sensor.migraine_factor_temperature_change
+entity_wind_speed: sensor.migraine_factor_wind
+entity_uv_index: sensor.migraine_factor_uv_sun
+entity_storm: sensor.migraine_factor_thunderstorm_nearby
+entity_air_quality: sensor.migraine_factor_air_quality
 ```
 
 All factor entities are optional — the card only displays what you configure. If you installed the sensor package with the default settings, the entity names above will work without any changes.
