@@ -1,5 +1,5 @@
 /**
- * Migraine Risk Card v2.0.3
+ * Migraine Risk Card v2.1.0
  * Home Assistant Custom Lovelace Card
  *
  * Works two ways:
@@ -15,7 +15,7 @@
  * © 2026 — MIT Licence
  */
 
-const CARD_VERSION = '2.0.3';
+const CARD_VERSION = '2.1.0';
 
 console.info(
   `%c🧠 Migraine Risk Card %cv${CARD_VERSION}`,
@@ -176,6 +176,22 @@ function parseNum(val) {
 function fmtNum(n) {
   if (n == null) return '?';
   return n % 1 === 0 ? String(n) : n.toFixed(1);
+}
+
+function convertToImperial(factorKey, metricValue) {
+  switch (factorKey) {
+    case 'pressure_6h':
+    case 'pressure_24h':
+      return { value: metricValue * 0.02953, unit: ' inHg' };
+    case 'temperature':
+      return { value: metricValue * 9 / 5 + 32, unit: '°F' };
+    case 'temperature_change':
+      return { value: metricValue * 9 / 5, unit: '°F' };
+    case 'wind':
+      return { value: metricValue / 1.60934, unit: ' mph' };
+    default:
+      return null;
+  }
 }
 
 function ensureFonts() {
@@ -697,6 +713,11 @@ class MigraineRiskCard extends HTMLElement {
     if (key === 'thunderstorm') return STORM_DISPLAY[st] || st;
     const n = parseNum(st);
     if (n == null) return st;
+    const imperial = this._config.displayUnits === 'imperial';
+    if (imperial) {
+      const conv = convertToImperial(key, n);
+      if (conv) return fmtNum(conv.value) + conv.unit;
+    }
     const unit = entity.attributes?.unit_of_measurement || def.unit || '';
     return fmtNum(n) + unit;
   }
@@ -862,6 +883,9 @@ class MigraineRiskCardEditor extends HTMLElement {
       weatherFields
     ));
 
+    // ── Section: Display ──
+    container.appendChild(this._displaySection());
+
     sr.appendChild(container);
     this._rendered = true;
 
@@ -871,6 +895,52 @@ class MigraineRiskCardEditor extends HTMLElement {
         p.hass = this._hass;
       });
     }
+  }
+
+  _displaySection() {
+    const section = document.createElement('div');
+    section.className = 'section';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'section-title';
+    titleEl.innerHTML = '<ha-icon icon="mdi:tune"></ha-icon> Display';
+    section.appendChild(titleEl);
+
+    const hintEl = document.createElement('div');
+    hintEl.className = 'hint';
+    hintEl.textContent = 'Internal scoring is always metric; only what you see on the card changes.';
+    hintEl.style.marginBottom = '12px';
+    section.appendChild(hintEl);
+
+    const field = document.createElement('div');
+    field.className = 'field';
+    const lbl = document.createElement('div');
+    lbl.className = 'field-label';
+    lbl.textContent = 'Display Units';
+    field.appendChild(lbl);
+
+    const select = document.createElement('ha-select');
+    select.value = this._config.displayUnits || 'metric';
+    select.label = 'Display Units';
+    ['metric', 'imperial'].forEach(v => {
+      const item = document.createElement('mwc-list-item');
+      item.value = v;
+      item.textContent = v === 'metric' ? 'Metric (°C, km/h, hPa)' : 'Imperial (°F, mph, inHg)';
+      select.appendChild(item);
+    });
+    select.addEventListener('selected', (e) => {
+      const val = e.target?.value || 'metric';
+      if (val === 'metric') {
+        delete this._config.displayUnits;
+      } else {
+        this._config.displayUnits = val;
+      }
+      this._fire();
+    });
+    field.appendChild(select);
+
+    section.appendChild(field);
+    return section;
   }
 
   _section(icon, title, hint, fields) {

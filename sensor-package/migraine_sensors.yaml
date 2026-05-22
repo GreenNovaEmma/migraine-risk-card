@@ -221,15 +221,26 @@ template:
         state: >
           {% set weather_entity = states('input_text.migraine_source_weather') %}
           {% set temp_entity = states('input_text.migraine_source_temperature') %}
+          {% macro to_celsius(v, source_entity=None) %}
+            {% set f = v | float(0) %}
+            {% set unit = state_attr(source_entity, 'unit_of_measurement') if source_entity else None %}
+            {% if unit in ['°F','F','fahrenheit'] or (unit is none and f > 50) %}
+              {{ ((f - 32) * 5 / 9) | round(2) }}
+            {% else %}
+              {{ f }}
+            {% endif %}
+          {% endmacro %}
           {% if temp_entity not in ['not_configured','unknown','unavailable','',none] %}
             {% set v = states(temp_entity) %}
             {% if v not in ['unknown','unavailable','',none] %}
-              {{ v | float(0) }}
+              {{ to_celsius(v, temp_entity) | trim }}
             {% else %}
-              {{ state_attr(weather_entity, 'temperature') | float(0) }}
+              {% set wa = state_attr(weather_entity, 'temperature') %}
+              {{ to_celsius(wa) | trim if wa is number else 0 }}
             {% endif %}
           {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
-            {{ state_attr(weather_entity, 'temperature') | float(0) }}
+            {% set wa = state_attr(weather_entity, 'temperature') %}
+            {{ to_celsius(wa) | trim if wa is number else 0 }}
           {% else %}
             {{ 0 }}
           {% endif %}
@@ -265,6 +276,8 @@ template:
             {% set f = v | float(0) %}
             {% if f >= 25 and f <= 33 %}
               {{ (f * 33.8639) | round(2) }}
+            {% elif f >= 600 and f <= 825 %}
+              {{ (f * 1.33322) | round(2) }}
             {% else %}
               {{ f }}
             {% endif %}
@@ -293,15 +306,31 @@ template:
         state: >
           {% set weather_entity = states('input_text.migraine_source_weather') %}
           {% set wind_entity = states('input_text.migraine_source_wind_speed') %}
+          {% macro to_kmh(v, source_entity=None) %}
+            {% set f = v | float(0) %}
+            {% set unit = state_attr(source_entity, 'unit_of_measurement') if source_entity else None %}
+            {% set weather_unit = state_attr(weather_entity, 'wind_speed_unit') if weather_entity not in ['not_configured','unknown','unavailable','',none] else None %}
+            {% if unit in ['mph','MPH'] or (source_entity is none and weather_unit == 'mph') %}
+              {{ (f * 1.60934) | round(2) }}
+            {% elif unit in ['m/s','meters_per_second'] or (source_entity is none and weather_unit == 'm/s') %}
+              {{ (f * 3.6) | round(2) }}
+            {% elif unit in ['knots','kn','kt'] or (source_entity is none and weather_unit in ['kn','knots']) %}
+              {{ (f * 1.852) | round(2) }}
+            {% else %}
+              {{ f }}
+            {% endif %}
+          {% endmacro %}
           {% if wind_entity not in ['not_configured','unknown','unavailable','',none] %}
             {% set v = states(wind_entity) %}
             {% if v not in ['unknown','unavailable','',none] %}
-              {{ v | float(0) }}
+              {{ to_kmh(v, wind_entity) | trim }}
             {% else %}
-              {{ state_attr(weather_entity, 'wind_speed') | float(0) }}
+              {% set wa = state_attr(weather_entity, 'wind_speed') %}
+              {{ to_kmh(wa) | trim if wa is number else 0 }}
             {% endif %}
           {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
-            {{ state_attr(weather_entity, 'wind_speed') | float(0) }}
+            {% set wa = state_attr(weather_entity, 'wind_speed') %}
+            {{ to_kmh(wa) | trim if wa is number else 0 }}
           {% else %}
             {{ 0 }}
           {% endif %}
