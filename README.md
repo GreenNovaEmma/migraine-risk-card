@@ -119,6 +119,30 @@ entity_air_quality: sensor.migraine_factor_air_quality
 
 All factor entities are optional — the card only displays what you configure. If you installed the sensor package with the default settings, the entity names above will work without any changes.
 
+## Upgrading from a pre-v2.0.3 install
+
+> **⚠️ Read this if you installed any version before v2.0.3.**
+
+Versions before v2.0.3 had a bug where Home Assistant sluggified `name: "Migraine Temperature (°C)"` into `sensor.migraine_temperature_degc` (and similarly `sensor.migraine_wind_speed_km_h`), but the scoring templates referenced `sensor.migraine_temperature` / `sensor.migraine_wind_speed`. The result: temperature and wind factors silently returned 0 and your risk score was wrong.
+
+**v2.0.3 fixes the YAML** so fresh installs get the correct entity IDs. But Home Assistant locks `unique_id → entity_id` mappings in the entity registry on first registration, so **just updating the YAML doesn't rename your existing entities** — you need a one-time manual rename.
+
+### One-time fix (preserves history)
+
+For each affected entity:
+
+1. **Settings → Devices & Services → Entities**
+2. Search `migraine_temperature_degc`
+3. Click it → click the cog icon (top right)
+4. Change **Entity ID** from `sensor.migraine_temperature_degc` to `sensor.migraine_temperature`
+5. Click **Update**
+6. Repeat for wind: search `migraine_wind_speed_km_h` → rename to `sensor.migraine_wind_speed`
+7. Reload templates (**Developer Tools → YAML → Template Entities**) or restart HA
+
+After that, the v2.0.3 YAML works as intended — templates find the right entities, the temperature-baseline automation runs, and the risk score scores correctly.
+
+**Not sure if you're affected?** Go to **Developer Tools → States** and search `migraine_temperature`. If you see `sensor.migraine_temperature_degc` (with the `_degc` suffix), you need the fix. If you see `sensor.migraine_temperature` cleanly, you're fine — either you're on a fresh v2.0.3+ install or you already manually renamed it.
+
 ## Configuring Data Sources
 
 The sensor package uses `input_text` helpers to store your entity mappings. This makes it easy to change your data sources at any time without editing YAML — just update the helper value in the UI and the sensors will pick up the new source automatically.
