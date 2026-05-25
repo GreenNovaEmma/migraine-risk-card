@@ -49,7 +49,11 @@ The sensor package creates the derived sensors (pressure drops, temperature chan
    homeassistant:
      packages: !include_dir_named packages
    ```
-2. Copy `sensor-package/migraine_sensors.yaml` to your `/config/packages/` directory
+2. Download the **latest** sensor package and save it to your `/config/packages/` directory:
+   - **Direct link to latest:** [migraine_sensors.yaml on main branch](https://raw.githubusercontent.com/GreenNovaEmma/migraine-risk-card/main/sensor-package/migraine_sensors.yaml) (right-click → Save As)
+   - Or grab it from the most recent release: [releases page](https://github.com/GreenNovaEmma/migraine-risk-card/releases/latest) → Assets → `migraine_sensors.yaml`
+
+   > **⚠️ Don't reuse an older local copy.** If you previously installed the sensor package and have an old version sitting on your machine, please re-download the latest one — earlier versions had a bug that breaks the risk score on new installs (see [Upgrading from a pre-v2.0.3 install](#upgrading-from-a-pre-v203-install)).
 3. Restart Home Assistant
 4. **Configure your data sources** — tell the sensor package which of your weather entities to use. You have two options:
 
