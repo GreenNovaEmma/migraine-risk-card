@@ -1,6 +1,5 @@
 {
   "name": "Migraine Risk Card",
-  "type": "plugin",
   "render_readme": true,
-  "filename": "migraine-risk-card.js"
+  "homeassistant": "2024.6.0"
 }

@@ -3,7 +3,7 @@
 # A science-backed environmental migraine risk scoring system for Home Assistant
 #
 # Part of the Migraine Risk Card project
-# https://github.com/GreenNovaEmma/migraine-risk-card
+# https://github.com/undel-gh/migraine-risk-card
 #
 # INSTALLATION:
 #   1. Copy this file to your /config/packages/ directory
@@ -157,6 +157,209 @@ input_boolean:
     icon: mdi:medical-bag
 
 input_number:
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # CALIBRATION: PERSONAL TRIGGER THRESHOLDS
+  # Migraine triggers are individual. Adjust these in Settings →
+  # Devices & Services → Helpers to match your own history — the
+  # scoring (and the card, in standalone mode) picks them up live.
+  # Defaults are the research-based values.
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  migraine_threshold_pressure_6h_1:
+    name: "Migraine Threshold: Pressure 6h → 1 pt"
+    min: 0.5
+    max: 30
+    step: 0.5
+    initial: 4
+    unit_of_measurement: "hPa"
+    mode: box
+    icon: mdi:gauge
+
+  migraine_threshold_pressure_6h_2:
+    name: "Migraine Threshold: Pressure 6h → 2 pts"
+    min: 0.5
+    max: 30
+    step: 0.5
+    initial: 6
+    unit_of_measurement: "hPa"
+    mode: box
+    icon: mdi:gauge
+
+  migraine_threshold_pressure_6h_3:
+    name: "Migraine Threshold: Pressure 6h → 3 pts"
+    min: 0.5
+    max: 30
+    step: 0.5
+    initial: 8
+    unit_of_measurement: "hPa"
+    mode: box
+    icon: mdi:gauge
+
+  migraine_threshold_pressure_6h_4:
+    name: "Migraine Threshold: Pressure 6h → 4 pts"
+    min: 0.5
+    max: 30
+    step: 0.5
+    initial: 10
+    unit_of_measurement: "hPa"
+    mode: box
+    icon: mdi:gauge
+
+  migraine_threshold_pressure_24h_1:
+    name: "Migraine Threshold: Pressure 24h → 1 pt"
+    min: 0.5
+    max: 40
+    step: 0.5
+    initial: 6
+    unit_of_measurement: "hPa"
+    mode: box
+    icon: mdi:hours-24
+
+  migraine_threshold_pressure_24h_2:
+    name: "Migraine Threshold: Pressure 24h → 2 pts"
+    min: 0.5
+    max: 40
+    step: 0.5
+    initial: 10
+    unit_of_measurement: "hPa"
+    mode: box
+    icon: mdi:hours-24
+
+  migraine_threshold_pressure_24h_3:
+    name: "Migraine Threshold: Pressure 24h → 3 pts"
+    min: 0.5
+    max: 40
+    step: 0.5
+    initial: 14
+    unit_of_measurement: "hPa"
+    mode: box
+    icon: mdi:hours-24
+
+  migraine_threshold_humidity_low:
+    name: "Migraine Threshold: Humidity low (dry, 1 pt)"
+    min: 0
+    max: 100
+    step: 1
+    initial: 30
+    unit_of_measurement: "%"
+    mode: box
+    icon: mdi:water-percent
+
+  migraine_threshold_humidity_high:
+    name: "Migraine Threshold: Humidity high (2 pts)"
+    min: 0
+    max: 100
+    step: 1
+    initial: 80
+    unit_of_measurement: "%"
+    mode: box
+    icon: mdi:water-percent
+
+  migraine_threshold_temp_hot:
+    name: "Migraine Threshold: Hot temperature (2 pts)"
+    min: 15
+    max: 50
+    step: 0.5
+    initial: 30
+    unit_of_measurement: "°C"
+    mode: box
+    icon: mdi:thermometer-high
+
+  migraine_threshold_temp_cold:
+    name: "Migraine Threshold: Cold temperature (2 pts)"
+    min: -40
+    max: 20
+    step: 0.5
+    initial: 5
+    unit_of_measurement: "°C"
+    mode: box
+    icon: mdi:thermometer-low
+
+  migraine_threshold_temp_change_1:
+    name: "Migraine Threshold: Temp change 6h → 1 pt"
+    min: 1
+    max: 25
+    step: 0.5
+    initial: 5
+    unit_of_measurement: "°C"
+    mode: box
+    icon: mdi:thermometer-chevron-up
+
+  migraine_threshold_temp_change_2:
+    name: "Migraine Threshold: Temp change 6h → 2 pts"
+    min: 1
+    max: 25
+    step: 0.5
+    initial: 8
+    unit_of_measurement: "°C"
+    mode: box
+    icon: mdi:thermometer-chevron-up
+
+  migraine_threshold_wind_1:
+    name: "Migraine Threshold: Wind → 1 pt"
+    min: 5
+    max: 150
+    step: 1
+    initial: 35
+    unit_of_measurement: "km/h"
+    mode: box
+    icon: mdi:weather-windy
+
+  migraine_threshold_wind_2:
+    name: "Migraine Threshold: Wind → 2 pts"
+    min: 5
+    max: 150
+    step: 1
+    initial: 50
+    unit_of_measurement: "km/h"
+    mode: box
+    icon: mdi:weather-windy
+
+  migraine_threshold_uv_1:
+    name: "Migraine Threshold: UV → 1 pt"
+    min: 1
+    max: 12
+    step: 0.5
+    initial: 6
+    mode: box
+    icon: mdi:sun-wireless
+
+  migraine_threshold_uv_2:
+    name: "Migraine Threshold: UV → 2 pts"
+    min: 1
+    max: 12
+    step: 0.5
+    initial: 8
+    mode: box
+    icon: mdi:sun-wireless
+
+  migraine_threshold_aqi_1:
+    name: "Migraine Threshold: AQI → 1 pt"
+    min: 10
+    max: 400
+    step: 5
+    initial: 50
+    mode: box
+    icon: mdi:air-filter
+
+  migraine_threshold_aqi_2:
+    name: "Migraine Threshold: AQI → 2 pts"
+    min: 10
+    max: 400
+    step: 5
+    initial: 100
+    mode: box
+    icon: mdi:air-filter
+
+  migraine_threshold_aqi_3:
+    name: "Migraine Threshold: AQI → 3 pts"
+    min: 10
+    max: 400
+    step: 5
+    initial: 150
+    mode: box
+    icon: mdi:air-filter
+
   pressure_6h_peak:
     name: "6h Pressure Peak"
     min: 900
@@ -236,13 +439,13 @@ template:
               {{ to_celsius(v, temp_entity) | trim }}
             {% else %}
               {% set wa = state_attr(weather_entity, 'temperature') %}
-              {{ to_celsius(wa) | trim if wa is number else 0 }}
+              {{ to_celsius(wa) | trim if wa is number else none }}
             {% endif %}
           {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
             {% set wa = state_attr(weather_entity, 'temperature') %}
-            {{ to_celsius(wa) | trim if wa is number else 0 }}
+            {{ to_celsius(wa) | trim if wa is number else none }}
           {% else %}
-            {{ 0 }}
+            {{ none }}
           {% endif %}
         unit_of_measurement: "°C"
         icon: mdi:thermometer
@@ -257,12 +460,14 @@ template:
             {% if v not in ['unknown','unavailable','',none] %}
               {{ v | float(0) }}
             {% else %}
-              {{ state_attr(weather_entity, 'humidity') | float(0) }}
+              {% set wa = state_attr(weather_entity, 'humidity') %}
+              {{ wa | float if wa is number else none }}
             {% endif %}
           {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
-            {{ state_attr(weather_entity, 'humidity') | float(0) }}
+            {% set wa = state_attr(weather_entity, 'humidity') %}
+            {{ wa | float if wa is number else none }}
           {% else %}
-            {{ 0 }}
+            {{ none }}
           {% endif %}
         unit_of_measurement: "%"
         icon: mdi:water-percent
@@ -461,7 +666,7 @@ template:
         state_class: measurement
         availability: >
           {{ states('sensor.migraine_temperature') not in ['unknown','unavailable','',none]
-             and states('input_number.temperature_6h_baseline') | float(0) != 0 }}
+             and states('input_number.temperature_6h_reset_time') | int(0) != 0 }}
         state: >
           {% set current = states('sensor.migraine_temperature') | float(0) %}
           {% set baseline = states('input_number.temperature_6h_baseline') | float(0) %}
@@ -489,9 +694,11 @@ template:
         unique_id: migraine_factor_humidity
         state: >
           {% set h = states('sensor.migraine_humidity') | float(0) %}
-          {% if h > 80 %}
+          {% set hi = states('input_number.migraine_threshold_humidity_high') | float(80) %}
+          {% set lo = states('input_number.migraine_threshold_humidity_low') | float(30) %}
+          {% if h > hi %}
             2
-          {% elif h < 30 %}
+          {% elif h < lo %}
             1
           {% else %}
             0
@@ -501,11 +708,18 @@ template:
       - name: "Migraine Factor: Temperature"
         unique_id: migraine_factor_temperature
         state: >
-          {% set t = states('sensor.migraine_temperature') | float(0) %}
-          {% if t > 30 or t < 5 %}
-            2
-          {% else %}
+          {% set raw = states('sensor.migraine_temperature') %}
+          {% if raw in ['unknown','unavailable','',none] %}
             0
+          {% else %}
+            {% set t = raw | float(0) %}
+            {% set hot = states('input_number.migraine_threshold_temp_hot') | float(30) %}
+            {% set cold = states('input_number.migraine_threshold_temp_cold') | float(5) %}
+            {% if t > hot or t < cold %}
+              2
+            {% else %}
+              0
+            {% endif %}
           {% endif %}
         icon: mdi:thermometer-alert
 
@@ -513,9 +727,11 @@ template:
         unique_id: migraine_factor_temperature_change
         state: >
           {% set delta = states('sensor.migraine_temperature_change_6h') | float(0) %}
-          {% if delta >= 8 %}
+          {% set t1 = states('input_number.migraine_threshold_temp_change_1') | float(5) %}
+          {% set t2 = states('input_number.migraine_threshold_temp_change_2') | float(8) %}
+          {% if delta >= t2 %}
             2
-          {% elif delta >= 5 %}
+          {% elif delta >= t1 %}
             1
           {% else %}
             0
@@ -530,9 +746,11 @@ template:
         unique_id: migraine_factor_wind
         state: >
           {% set w = states('sensor.migraine_wind_speed') | float(0) %}
-          {% if w >= 50 %}
+          {% set w1 = states('input_number.migraine_threshold_wind_1') | float(35) %}
+          {% set w2 = states('input_number.migraine_threshold_wind_2') | float(50) %}
+          {% if w >= w2 %}
             2
-          {% elif w >= 35 %}
+          {% elif w >= w1 %}
             1
           {% else %}
             0
@@ -543,9 +761,11 @@ template:
         unique_id: migraine_factor_uv_sun
         state: >
           {% set uv = states('sensor.migraine_uv_index') | float(0) %}
-          {% if uv >= 8 %}
+          {% set u1 = states('input_number.migraine_threshold_uv_1') | float(6) %}
+          {% set u2 = states('input_number.migraine_threshold_uv_2') | float(8) %}
+          {% if uv >= u2 %}
             2
-          {% elif uv >= 6 %}
+          {% elif uv >= u1 %}
             1
           {% else %}
             0
@@ -559,7 +779,10 @@ template:
           {% set pm25 = states('sensor.migraine_waqi_pm25') | float(0) %}
           {% set pm10 = states('sensor.migraine_waqi_pm10') | float(0) %}
           {% set o3 = states('sensor.migraine_waqi_o3') | float(0) %}
-          {% set base = 0 if aqi <= 50 else 1 if aqi <= 100 else 2 if aqi <= 150 else 3 %}
+          {% set a1 = states('input_number.migraine_threshold_aqi_1') | float(50) %}
+          {% set a2 = states('input_number.migraine_threshold_aqi_2') | float(100) %}
+          {% set a3 = states('input_number.migraine_threshold_aqi_3') | float(150) %}
+          {% set base = 0 if aqi <= a1 else 1 if aqi <= a2 else 2 if aqi <= a3 else 3 %}
           {% set nudge = 0 %}
           {% if pm25 >= 25 %}{% set nudge = nudge + 1 %}{% endif %}
           {% if pm10 >= 50 %}{% set nudge = nudge + 1 %}{% endif %}
@@ -572,62 +795,10 @@ template:
           pm10_ugm3: "{{ states('sensor.migraine_waqi_pm10') }}"
           o3_ugm3: "{{ states('sensor.migraine_waqi_o3') }}"
 
-      - name: "Migraine Factor: Thunderstorm Nearby"
-        unique_id: migraine_factor_thunderstorm_nearby
-        state: >
-          {% set warn_entity = states('input_text.migraine_source_weather_warnings') %}
-          {% set fc_entity = states('input_text.migraine_source_forecast_text_today') %}
-          {% set weather_entity = states('input_text.migraine_source_weather') %}
-          {# Check weather warnings sensor #}
-          {% set warnings_text = '' %}
-          {% if warn_entity not in ['not_configured','unknown','unavailable','',none] %}
-            {% set warnings_text = states(warn_entity) | lower %}
-          {% endif %}
-          {# Check forecast text sensor #}
-          {% set forecast_text = '' %}
-          {% if fc_entity not in ['not_configured','unknown','unavailable','',none] %}
-            {% set forecast_text = states(fc_entity) | lower %}
-          {% endif %}
-          {# Check weather entity forecast conditions #}
-          {% set condition_thunder = false %}
-          {% if weather_entity not in ['not_configured','unknown','unavailable','',none] %}
-            {% set fc = state_attr(weather_entity, 'forecast') %}
-            {% if fc is iterable %}
-              {% set today = now().date() %}
-              {% set thunder = fc | selectattr('datetime','defined') | selectattr('condition','defined') | selectattr('datetime','search', today|string) | selectattr('condition','in',['thunderstorm','lightning','storm']) | list %}
-              {% set condition_thunder = thunder | length > 0 %}
-            {% endif %}
-          {% endif %}
-          {% set warning_thunder = 'thunderstorm' in warnings_text %}
-          {% set forecast_thunder = 'thunderstorm' in forecast_text or 'thunder' in forecast_text %}
-          {% if warning_thunder %}
-            2
-          {% elif forecast_thunder or condition_thunder %}
-            1
-          {% else %}
-            0
-          {% endif %}
-        icon: mdi:weather-lightning
-        attributes:
-          detection_method: >
-            {% set warn_entity = states('input_text.migraine_source_weather_warnings') %}
-            {% set fc_entity = states('input_text.migraine_source_forecast_text_today') %}
-            {% set weather_entity = states('input_text.migraine_source_weather') %}
-            {% set warnings_text = '' %}
-            {% if warn_entity not in ['not_configured','unknown','unavailable','',none] %}
-              {% set warnings_text = states(warn_entity) | lower %}
-            {% endif %}
-            {% set forecast_text = '' %}
-            {% if fc_entity not in ['not_configured','unknown','unavailable','',none] %}
-              {% set forecast_text = states(fc_entity) | lower %}
-            {% endif %}
-            {% if 'thunderstorm' in warnings_text %}
-              Active warning detected
-            {% elif 'thunderstorm' in forecast_text or 'thunder' in forecast_text %}
-              Forecast text mentions thunderstorm
-            {% else %}
-              No thunderstorm detected
-            {% endif %}
+      # NOTE: "Migraine Factor: Thunderstorm Nearby" is now a trigger-based
+      # template sensor (see the TRIGGER-BASED FORECAST block below) using
+      # the weather.get_forecasts action, since modern weather integrations
+      # no longer expose the 'forecast' attribute.
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # MIGRAINE RISK SCORE & LEVEL
@@ -648,17 +819,31 @@ template:
           {% set uvf = states('sensor.migraine_factor_uv_sun') | int(0) %}
           {% set thf = states('sensor.migraine_factor_thunderstorm_nearby') | int(0) %}
           {% set aqif = states('sensor.migraine_factor_air_quality') | int(0) %}
-          {% set d6_pts = 4 if d6 >= 10 else 3 if d6 >= 8 else 2 if d6 >= 6 else 1 if d6 >= 4 else 0 %}
-          {% set d24_pts = 3 if d24 >= 14 else 2 if d24 >= 10 else 1 if d24 >= 6 else 0 %}
+          {% set p1 = states('input_number.migraine_threshold_pressure_6h_1') | float(4) %}
+          {% set p2 = states('input_number.migraine_threshold_pressure_6h_2') | float(6) %}
+          {% set p3 = states('input_number.migraine_threshold_pressure_6h_3') | float(8) %}
+          {% set p4 = states('input_number.migraine_threshold_pressure_6h_4') | float(10) %}
+          {% set q1 = states('input_number.migraine_threshold_pressure_24h_1') | float(6) %}
+          {% set q2 = states('input_number.migraine_threshold_pressure_24h_2') | float(10) %}
+          {% set q3 = states('input_number.migraine_threshold_pressure_24h_3') | float(14) %}
+          {% set d6_pts = 4 if d6 >= p4 else 3 if d6 >= p3 else 2 if d6 >= p2 else 1 if d6 >= p1 else 0 %}
+          {% set d24_pts = 3 if d24 >= q3 else 2 if d24 >= q2 else 1 if d24 >= q1 else 0 %}
           {{ d6_pts + d24_pts + humf + tempf + temp_chg + windf + uvf + thf + aqif }}
         icon: mdi:head-alert-outline
         attributes:
           pressure_6h_points: >
             {% set d6 = states('sensor.migraine_pressure_drop_6h') | float(0) %}
-            {{ 4 if d6 >= 10 else 3 if d6 >= 8 else 2 if d6 >= 6 else 1 if d6 >= 4 else 0 }}
+            {% set p1 = states('input_number.migraine_threshold_pressure_6h_1') | float(4) %}
+            {% set p2 = states('input_number.migraine_threshold_pressure_6h_2') | float(6) %}
+            {% set p3 = states('input_number.migraine_threshold_pressure_6h_3') | float(8) %}
+            {% set p4 = states('input_number.migraine_threshold_pressure_6h_4') | float(10) %}
+            {{ 4 if d6 >= p4 else 3 if d6 >= p3 else 2 if d6 >= p2 else 1 if d6 >= p1 else 0 }}
           pressure_24h_points: >
             {% set d24 = states('sensor.migraine_pressure_drop_24h') | float(0) %}
-            {{ 3 if d24 >= 14 else 2 if d24 >= 10 else 1 if d24 >= 6 else 0 }}
+            {% set q1 = states('input_number.migraine_threshold_pressure_24h_1') | float(6) %}
+            {% set q2 = states('input_number.migraine_threshold_pressure_24h_2') | float(10) %}
+            {% set q3 = states('input_number.migraine_threshold_pressure_24h_3') | float(14) %}
+            {{ 3 if d24 >= q3 else 2 if d24 >= q2 else 1 if d24 >= q1 else 0 }}
           humidity_points: "{{ states('sensor.migraine_factor_humidity') | int(0) }}"
           temperature_points: "{{ states('sensor.migraine_factor_temperature') | int(0) }}"
           temperature_change_points: "{{ states('sensor.migraine_factor_temperature_change') | int(0) }}"
@@ -701,58 +886,112 @@ template:
         unique_id: migraine_risk_forecast_tomorrow
         unit_of_measurement: "pts"
         availability: >
+          {% set fd = states('sensor.migraine_forecast_tomorrow_data') %}
           {% set tmax_entity = states('input_text.migraine_source_forecast_temp_max') %}
-          {{ tmax_entity not in ['not_configured','unknown','unavailable','',none]
-             and states(tmax_entity) not in ['unknown','unavailable','',none] }}
+          {{ (fd not in ['unknown','unavailable','',none]
+              and state_attr('sensor.migraine_forecast_tomorrow_data','temp_max') is not none)
+             or (tmax_entity not in ['not_configured','unknown','unavailable','',none]
+                 and states(tmax_entity) | float(none) is not none) }}
         state: >
+          {# ── Prefer weather.get_forecasts data, fall back to input_text helpers ── #}
+          {% set fd = 'sensor.migraine_forecast_tomorrow_data' %}
+          {% set fd_tmax = state_attr(fd, 'temp_max') %}
+          {% set fd_tmin = state_attr(fd, 'temp_min') %}
+          {% set fd_uv = state_attr(fd, 'uv_index') %}
+          {% set fd_rain = state_attr(fd, 'rain_chance') %}
+          {% set fd_wind = state_attr(fd, 'wind_kmh') %}
+          {% set fd_thunder = state_attr(fd, 'thunder_tomorrow') in [true, 'True', 'true'] %}
           {% set tmax_entity = states('input_text.migraine_source_forecast_temp_max') %}
           {% set tmin_entity = states('input_text.migraine_source_forecast_temp_min') %}
           {% set uv_entity = states('input_text.migraine_source_forecast_uv') %}
           {% set fc_entity = states('input_text.migraine_source_forecast_text') %}
           {% set rain_entity = states('input_text.migraine_source_forecast_rain_chance') %}
-          {# Temperature extremes #}
-          {% set tmax = states(tmax_entity) | float(0) if tmax_entity not in ['not_configured','unknown','unavailable','',none] else 20 %}
-          {% set tmin = states(tmin_entity) | float(0) if tmin_entity not in ['not_configured','unknown','unavailable','',none] else 15 %}
-          {% set temp_pts = 2 if (tmax > 30 or tmin < 5) else 1 if (tmax > 28 or tmin < 8) else 0 %}
-          {# Temperature swing (range as proxy for change) #}
-          {% set temp_range = tmax - tmin %}
-          {% set swing_pts = 2 if temp_range >= 15 else 1 if temp_range >= 10 else 0 %}
-          {# UV #}
-          {% set uv = states(uv_entity) | float(0) if uv_entity not in ['not_configured','unknown','unavailable','',none] else 0 %}
-          {% set uv_pts = 2 if uv >= 8 else 1 if uv >= 6 else 0 %}
-          {# Wind & thunderstorm from forecast text #}
-          {% set fc_text = '' %}
-          {% if fc_entity not in ['not_configured','unknown','unavailable','',none] %}
-            {% set fc_text = states(fc_entity) | lower %}
+          {% set helper_tmax = states(tmax_entity) | float(none) if tmax_entity not in ['not_configured','unknown','unavailable','',none] else none %}
+          {% set helper_tmin = states(tmin_entity) | float(none) if tmin_entity not in ['not_configured','unknown','unavailable','',none] else none %}
+          {% set helper_uv = states(uv_entity) | float(none) if uv_entity not in ['not_configured','unknown','unavailable','',none] else none %}
+          {% set helper_rain = states(rain_entity) | float(none) if rain_entity not in ['not_configured','unknown','unavailable','',none] else none %}
+          {% set tmax = fd_tmax | float(none) if fd_tmax is not none else helper_tmax %}
+          {% set tmin = fd_tmin | float(none) if fd_tmin is not none else helper_tmin %}
+          {% set uv = fd_uv | float(none) if fd_uv is not none else helper_uv %}
+          {% set rain_chance = fd_rain | float(none) if fd_rain is not none else helper_rain %}
+          {# ── Temperature extremes (skip if no data instead of assuming 0°) ── #}
+          {% set temp_pts = 0 %}
+          {% if tmax is not none and tmin is not none %}
+            {% set hot = states('input_number.migraine_threshold_temp_hot') | float(30) %}
+            {% set cold = states('input_number.migraine_threshold_temp_cold') | float(5) %}
+            {% set temp_pts = 2 if (tmax > hot or tmin < cold) else 1 if (tmax > hot - 2 or tmin < cold + 3) else 0 %}
+          {% elif tmax is not none %}
+            {% set hot = states('input_number.migraine_threshold_temp_hot') | float(30) %}
+            {% set temp_pts = 2 if tmax > hot else 1 if tmax > hot - 2 else 0 %}
           {% endif %}
+          {# ── Temperature swing (range as proxy for change) ── #}
+          {% set swing_pts = 0 %}
+          {% if tmax is not none and tmin is not none %}
+            {% set temp_range = tmax - tmin %}
+            {% set swing_pts = 2 if temp_range >= 15 else 1 if temp_range >= 10 else 0 %}
+          {% endif %}
+          {# ── UV ── #}
+          {% set uv_pts = 0 %}
+          {% if uv is not none %}
+            {% set u1 = states('input_number.migraine_threshold_uv_1') | float(6) %}
+            {% set u2 = states('input_number.migraine_threshold_uv_2') | float(8) %}
+            {% set uv_pts = 2 if uv >= u2 else 1 if uv >= u1 else 0 %}
+          {% endif %}
+          {# ── Wind: numeric from forecast, else RU/EN keywords in text ── #}
+          {% set fc_text = states(fc_entity) | lower if fc_entity not in ['not_configured','unknown','unavailable','',none] else '' %}
           {% set wind_pts = 0 %}
-          {% if 'damaging winds' in fc_text or 'destructive winds' in fc_text %}
-            {% set wind_pts = 2 %}
-          {% elif 'strong winds' in fc_text or '45 to' in fc_text or '50 to' in fc_text or '55 to' in fc_text or '60 to' in fc_text %}
-            {% set wind_pts = 2 %}
-          {% elif '35 to' in fc_text or '40 to' in fc_text %}
-            {% set wind_pts = 1 %}
+          {% if fd_wind is not none and fd_wind | float(none) is not none %}
+            {% set w = fd_wind | float(0) %}
+            {% set w1 = states('input_number.migraine_threshold_wind_1') | float(35) %}
+            {% set w2 = states('input_number.migraine_threshold_wind_2') | float(50) %}
+            {% set wind_pts = 2 if w >= w2 else 1 if w >= w1 else 0 %}
+          {% elif fc_text %}
+            {% set severe_kw = ['damaging winds', 'destructive winds', 'strong winds',
+                                'ураган', 'штормовой ветер', 'очень сильный ветер', 'разрушительн'] %}
+            {% set mild_kw = ['windy', 'сильный ветер', 'порывистый ветер', 'усиление ветра'] %}
+            {% if severe_kw | select('in', fc_text) | list | length > 0 %}
+              {% set wind_pts = 2 %}
+            {% elif mild_kw | select('in', fc_text) | list | length > 0 %}
+              {% set wind_pts = 1 %}
+            {% endif %}
           {% endif %}
-          {% set thunder_pts = 2 if ('thunderstorm' in fc_text or 'thunder' in fc_text) else 0 %}
-          {# Humidity proxy from rain chance #}
-          {% set rain_chance = states(rain_entity) | float(0) if rain_entity not in ['not_configured','unknown','unavailable','',none] else 0 %}
-          {% set hum_pts = 1 if rain_chance >= 80 else 0 %}
-          {# Total #}
+          {# ── Thunderstorm: forecast condition, else RU/EN keywords ── #}
+          {% set thunder_kw = ['thunderstorm', 'thunder', 'lightning', 'гроз', 'молни', 'шторм'] %}
+          {% set thunder_pts = 2 if (fd_thunder or thunder_kw | select('in', fc_text) | list | length > 0) else 0 %}
+          {# ── Humidity proxy from rain chance ── #}
+          {% set hum_pts = 1 if (rain_chance is not none and rain_chance >= 80) else 0 %}
           {{ temp_pts + swing_pts + uv_pts + wind_pts + thunder_pts + hum_pts }}
         icon: mdi:crystal-ball
         attributes:
           temp_max: >
-            {% set e = states('input_text.migraine_source_forecast_temp_max') %}
-            {{ states(e) ~ '°C' if e not in ['not_configured','unknown','unavailable','',none] else 'N/A' }}
+            {% set v = state_attr('sensor.migraine_forecast_tomorrow_data', 'temp_max') | float(none) %}
+            {% if v is none %}
+              {% set e = states('input_text.migraine_source_forecast_temp_max') %}
+              {% set v = states(e) | float(none) if e not in ['not_configured','unknown','unavailable','',none] else none %}
+            {% endif %}
+            {{ (v | round(1) ~ '°C') if v is not none else 'N/A' }}
           temp_min: >
-            {% set e = states('input_text.migraine_source_forecast_temp_min') %}
-            {{ states(e) ~ '°C' if e not in ['not_configured','unknown','unavailable','',none] else 'N/A' }}
+            {% set v = state_attr('sensor.migraine_forecast_tomorrow_data', 'temp_min') | float(none) %}
+            {% if v is none %}
+              {% set e = states('input_text.migraine_source_forecast_temp_min') %}
+              {% set v = states(e) | float(none) if e not in ['not_configured','unknown','unavailable','',none] else none %}
+            {% endif %}
+            {{ (v | round(1) ~ '°C') if v is not none else 'N/A' }}
           uv_index: >
-            {% set e = states('input_text.migraine_source_forecast_uv') %}
-            {{ states(e) if e not in ['not_configured','unknown','unavailable','',none] else 'N/A' }}
+            {% set v = state_attr('sensor.migraine_forecast_tomorrow_data', 'uv_index') | float(none) %}
+            {% if v is none %}
+              {% set e = states('input_text.migraine_source_forecast_uv') %}
+              {% set v = states(e) | float(none) if e not in ['not_configured','unknown','unavailable','',none] else none %}
+            {% endif %}
+            {{ v | round(1) if v is not none else 'N/A' }}
           rain_chance: >
-            {% set e = states('input_text.migraine_source_forecast_rain_chance') %}
-            {{ states(e) ~ '%' if e not in ['not_configured','unknown','unavailable','',none] else 'N/A' }}
+            {% set v = state_attr('sensor.migraine_forecast_tomorrow_data', 'rain_chance') | float(none) %}
+            {% if v is none %}
+              {% set e = states('input_text.migraine_source_forecast_rain_chance') %}
+              {% set v = states(e) | float(none) if e not in ['not_configured','unknown','unavailable','',none] else none %}
+            {% endif %}
+            {{ (v | round(0) ~ '%') if v is not none else 'N/A' }}
+          condition: "{{ states('sensor.migraine_forecast_tomorrow_data') }}"
           risk_level: >
             {% set s = states('sensor.migraine_risk_forecast_tomorrow') | int(0) %}
             {% if s >= 8 %}
@@ -764,6 +1003,181 @@ template:
             {% else %}
               Low
             {% endif %}
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # TRIGGER-BASED FORECAST
+  # Modern weather integrations no longer expose the 'forecast'
+  # attribute, so forecasts are fetched here via the
+  # weather.get_forecasts action every 30 minutes.
+  # Source: input_text.migraine_source_weather (a weather.* entity)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  - triggers:
+      - trigger: homeassistant
+        event: start
+      - trigger: event
+        event_type: event_template_reloaded
+      - trigger: time_pattern
+        minutes: "/30"
+      - trigger: state
+        entity_id: input_text.migraine_source_weather
+    conditions:
+      - condition: template
+        value_template: >
+          {% set w = states('input_text.migraine_source_weather') %}
+          {{ w not in ['not_configured','unknown','unavailable','',none]
+             and w.startswith('weather.')
+             and states(w) not in ['unknown','unavailable','',none] }}
+    actions:
+      - variables:
+          weather_entity: "{{ states('input_text.migraine_source_weather') }}"
+      # Hourly forecast (may be unsupported by some integrations)
+      - action: weather.get_forecasts
+        target:
+          entity_id: "{{ weather_entity }}"
+        data:
+          type: hourly
+        response_variable: hourly_response
+        continue_on_error: true
+      # Daily forecast
+      - action: weather.get_forecasts
+        target:
+          entity_id: "{{ weather_entity }}"
+        data:
+          type: daily
+        response_variable: daily_response
+        continue_on_error: true
+      - variables:
+          hourly_fc: >
+            {{ (hourly_response | default({})).get(weather_entity, {}).get('forecast', []) }}
+          daily_fc: >
+            {{ (daily_response | default({})).get(weather_entity, {}).get('forecast', []) }}
+          thunder_conditions: "{{ ['lightning', 'lightning-rainy', 'thunderstorm', 'storm'] }}"
+          # Thunderstorm expected within the next 3 hours (hourly forecast)
+          thunder_next_3h: >
+            {% set ns = namespace(hit=false) %}
+            {% for f in hourly_fc %}
+              {% set dt = f.datetime | as_datetime %}
+              {% if dt is not none and f.condition | default('') in thunder_conditions %}
+                {% set dt = dt | as_local %}
+                {% if now() - timedelta(hours=1) <= dt <= now() + timedelta(hours=3) %}
+                  {% set ns.hit = true %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.hit }}
+          # Thunderstorm expected at any point today (hourly, falls back to daily)
+          thunder_today: >
+            {% set ns = namespace(hit=false) %}
+            {% for f in hourly_fc %}
+              {% set dt = f.datetime | as_datetime %}
+              {% if dt is not none and f.condition | default('') in thunder_conditions
+                    and (dt | as_local).date() == now().date() %}
+                {% set ns.hit = true %}
+              {% endif %}
+            {% endfor %}
+            {% for f in daily_fc %}
+              {% set dt = f.datetime | as_datetime %}
+              {% if dt is not none and f.condition | default('') in thunder_conditions
+                    and (dt | as_local).date() == now().date() %}
+                {% set ns.hit = true %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.hit }}
+          # Tomorrow's daily forecast entry (empty dict if not found)
+          tomorrow_entry: >
+            {% set tomorrow = (now() + timedelta(days=1)).date() %}
+            {% set ns = namespace(e={}) %}
+            {% for f in daily_fc %}
+              {% set dt = f.datetime | as_datetime %}
+              {% if dt is not none and (dt | as_local).date() == tomorrow %}
+                {% set ns.e = f %}
+              {% endif %}
+            {% endfor %}
+            {{ ns.e }}
+          # Wind normalised to km/h for scoring
+          tomorrow_wind_kmh: >
+            {% set v = tomorrow_entry.get('wind_speed') %}
+            {% if v is none %}
+              {{ none }}
+            {% else %}
+              {% set u = state_attr(weather_entity, 'wind_speed_unit') | default('km/h', true) | lower %}
+              {% if 'm/s' in u or 'м/с' in u %}
+                {{ (v | float(0)) * 3.6 }}
+              {% elif 'mph' in u %}
+                {{ (v | float(0)) * 1.60934 }}
+              {% else %}
+                {{ v | float(0) }}
+              {% endif %}
+            {% endif %}
+    sensor:
+      # Restored factor sensor (referenced by risk score & lightning alert).
+      # 2 pts: active warning OR thunderstorm within 3 hours
+      # 1 pt:  thunderstorm expected later today (forecast or text mention)
+      - name: "Migraine Factor: Thunderstorm Nearby"
+        unique_id: migraine_factor_thunderstorm_nearby
+        state: >
+          {% set kw = ['thunderstorm', 'thunder', 'lightning', 'severe storm',
+                       'гроз', 'молни', 'шторм'] %}
+          {% set warn_entity = states('input_text.migraine_source_weather_warnings') %}
+          {% set fc_entity = states('input_text.migraine_source_forecast_text_today') %}
+          {% set warnings_text = states(warn_entity) | lower
+             if warn_entity not in ['not_configured','unknown','unavailable','',none] else '' %}
+          {% set forecast_text = states(fc_entity) | lower
+             if fc_entity not in ['not_configured','unknown','unavailable','',none] else '' %}
+          {% set warning_thunder = kw | select('in', warnings_text) | list | length > 0 %}
+          {% set text_thunder = kw | select('in', forecast_text) | list | length > 0 %}
+          {% if warning_thunder or thunder_next_3h %}
+            2
+          {% elif thunder_today or text_thunder %}
+            1
+          {% else %}
+            0
+          {% endif %}
+        icon: mdi:weather-lightning
+        attributes:
+          thunder_next_3h: "{{ thunder_next_3h }}"
+          thunder_today: "{{ thunder_today }}"
+          detection_method: >
+            {% if thunder_next_3h %}
+              Forecast: thunderstorm within 3 hours
+            {% elif thunder_today %}
+              Forecast: thunderstorm later today
+            {% else %}
+              {% set kw = ['thunderstorm', 'thunder', 'lightning', 'severe storm',
+                           'гроз', 'молни', 'шторм'] %}
+              {% set warn_entity = states('input_text.migraine_source_weather_warnings') %}
+              {% set fc_entity = states('input_text.migraine_source_forecast_text_today') %}
+              {% set warnings_text = states(warn_entity) | lower
+                 if warn_entity not in ['not_configured','unknown','unavailable','',none] else '' %}
+              {% set forecast_text = states(fc_entity) | lower
+                 if fc_entity not in ['not_configured','unknown','unavailable','',none] else '' %}
+              {% if kw | select('in', warnings_text) | list | length > 0 %}
+                Active warning detected
+              {% elif kw | select('in', forecast_text) | list | length > 0 %}
+                Forecast text mentions thunderstorm
+              {% else %}
+                No thunderstorm detected
+              {% endif %}
+            {% endif %}
+          last_fetch: "{{ now().isoformat() }}"
+
+      # Numeric data for tomorrow, extracted from the daily forecast.
+      # Consumed by "Migraine Risk Forecast Tomorrow" below.
+      - name: "Migraine Forecast Tomorrow Data"
+        unique_id: migraine_forecast_tomorrow_data
+        state: "{{ tomorrow_entry.get('condition', 'unknown') }}"
+        icon: mdi:calendar-clock
+        attributes:
+          temp_max: "{{ tomorrow_entry.get('temperature') }}"
+          temp_min: "{{ tomorrow_entry.get('templow') }}"
+          uv_index: "{{ tomorrow_entry.get('uv_index') }}"
+          rain_chance: "{{ tomorrow_entry.get('precipitation_probability') }}"
+          humidity: "{{ tomorrow_entry.get('humidity') }}"
+          wind_kmh: "{{ tomorrow_wind_kmh }}"
+          thunder_tomorrow: >
+            {{ tomorrow_entry.get('condition', '') in ['lightning', 'lightning-rainy', 'thunderstorm', 'storm'] }}
+          last_fetch: "{{ now().isoformat() }}"
 
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   # BINARY SENSORS (alerts & triggers)
@@ -796,7 +1210,8 @@ template:
         state: >
           {% set drop_6h = states('sensor.migraine_pressure_drop_6h') | float(0) %}
           {% set drop_24h = states('sensor.migraine_pressure_drop_24h') | float(0) %}
-          {{ drop_6h >= 4 or drop_24h >= 4 }}
+          {{ drop_6h >= states('input_number.migraine_threshold_pressure_6h_1') | float(4)
+             or drop_24h >= states('input_number.migraine_threshold_pressure_24h_1') | float(6) }}
         icon: >
           {% if is_state(this.entity_id,'on') %}mdi:trending-down{% else %}mdi:trending-neutral{% endif %}
         attributes:

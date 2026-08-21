@@ -1,0 +1,25 @@
+name: HACS Validation
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  hacs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: HACS Action
+        # You may pin to the exact commit or the version.
+        # uses: hacs/action@d556e736723344f83838d08488c983a15381059a
+        uses: hacs/action@22.5.0
+        with:
+          # A space seperated list of ignored checks, for valid entries see README.md
+          ignore: # optional, default is 
+          # The category of repository
+          category: plugin
+          # The full name of repository
+          repository: # optional
+          # Post a comment to the PR with the result of the checks
+          comment: # optional, default is true
+          # Personal access token (PAT)
+          github_token: ${{ secrets.GITHUB_TOKEN }}

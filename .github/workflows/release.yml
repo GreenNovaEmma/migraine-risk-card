@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  verify:
+    name: Verify release contents
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the release tag
+        uses: actions/checkout@v4
+
+      # NOTE: this workflow deliberately attaches NO release assets.
+      # HACS scans the latest release when downloading a plugin, and release
+      # assets are flat files — a `translations/` folder cannot survive there.
+      # With no assets, HACS falls back to the dist/ directory of the tag and
+      # downloads it recursively, translations included.
+      - name: Ensure dist ships everything the card needs
+        run: |
+          test -f dist/migraine-risk-card.js || { echo "::error::dist/migraine-risk-card.js missing"; exit 1; }
+          test -f dist/translations/en.json || { echo "::error::dist/translations/en.json missing"; exit 1; }
+          node --check dist/migraine-risk-card.js
+          if grep -q '"filename"' hacs.json; then
+            echo "::error::hacs.json must not set \"filename\" — it would limit the download to a single file"
+            exit 1
+          fi
+          echo "Release contents OK: $(ls dist dist/translations | tr '\n' ' ')"

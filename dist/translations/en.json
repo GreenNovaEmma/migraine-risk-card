@@ -1,0 +1,98 @@
+{
+  "factors_header": "Contributing Factors",
+  "empty": "Configure entity sensors in the card editor to get started.",
+  "no_data": "NO DATA",
+  "no_forecast": "Forecast unavailable",
+  "forecast_loading": "Loading forecast…",
+  "forecast_title": "Tomorrow's Forecast",
+  "pts": "pts",
+  "rain": "Rain",
+  "level": {
+    "Low": "Low",
+    "Moderate": "Moderate",
+    "High": "High",
+    "Very High": "Very High"
+  },
+  "storm": {
+    "0": "Clear",
+    "1": "Risk",
+    "2": "Storm"
+  },
+  "factor": {
+    "pressure_6h": {
+      "name": "Pressure 6h",
+      "label": "Pressure Change (6h)"
+    },
+    "pressure_24h": {
+      "name": "Pressure 24h",
+      "label": "Pressure Change (24h)"
+    },
+    "humidity": {
+      "name": "Humidity",
+      "label": "Humidity"
+    },
+    "temperature": {
+      "name": "Temperature",
+      "label": "Current Temperature"
+    },
+    "temperature_change": {
+      "name": "Temp Change",
+      "label": "Temperature Change (6h)"
+    },
+    "wind": {
+      "name": "Wind",
+      "label": "Wind Speed"
+    },
+    "uv": {
+      "name": "UV",
+      "label": "UV Index"
+    },
+    "thunderstorm": {
+      "name": "Storm",
+      "label": "Storm / Lightning"
+    },
+    "air_quality": {
+      "name": "AQI",
+      "label": "Air Quality (AQI)"
+    }
+  },
+  "editor": {
+    "integration": "Integration (Optional)",
+    "integration_hint": "Optional: pre-computed scores from the sensor package. Forecast Entity may also be a weather entity — the card will compute tomorrow itself.",
+    "risk_score": "Risk Score Entity",
+    "risk_level": "Risk Level Entity",
+    "forecast": "Forecast Entity",
+    "weather": "Weather Sensors",
+    "weather_hint": "Sensors or a weather entity both work. From a weather entity the card reads attributes directly and computes pressure/temperature changes from history and storms from the forecast — no sensor package needed.",
+    "display": "Display",
+    "display_hint": "Internal scoring is always metric; only what you see on the card changes.",
+    "units": "Display Units",
+    "metric": "Metric (°C, km/h, hPa)",
+    "imperial": "Imperial (°F, mph, inHg)",
+    "language": "Language",
+    "lang_auto": "Auto (Home Assistant)",
+    "max_score": "Gauge maximum (integration mode)",
+    "max_score_hint": "Leave empty for automatic.",
+    "title": "Card title",
+    "title_hint": "Optional — useful when showing several locations.",
+    "theme": "Theme",
+    "theme_auto": "Auto (follow Home Assistant)",
+    "theme_dark": "Dark",
+    "theme_light": "Light",
+    "calibration": "Calibration — personal thresholds",
+    "calibration_hint": "Migraine triggers are individual. Leave a field empty to use the input_number helper (if present) or the research default shown as the placeholder.",
+    "pts_step": "pts",
+    "th": {
+      "pressure_6h": "Pressure change 6h (hPa)",
+      "pressure_24h": "Pressure change 24h (hPa)",
+      "humidity_low": "Humidity — dry, 1 pt (%)",
+      "humidity_high": "Humidity — humid, 2 pts (%)",
+      "temp_hot": "Hot temperature, 2 pts (°C)",
+      "temp_cold": "Cold temperature, 2 pts (°C)",
+      "temp_change": "Temperature change 6h (°C)",
+      "wind": "Wind speed (km/h)",
+      "uv": "UV index",
+      "aqi": "Air quality (AQI)"
+    }
+  }
+}

@@ -1,228 +1,270 @@
 # Migraine Risk Card for Home Assistant
 
-A science-backed environmental migraine risk monitoring card for Home Assistant. Tracks 9 weather and air quality factors known to trigger migraines and displays a composite risk score with a visual gauge.
+A science-backed environmental migraine risk monitoring card for Home Assistant. It tracks up to 9 weather and air-quality factors known to trigger migraines and shows a composite risk score on a visual gauge — plus tomorrow's outlook.
 
-![Migraine Risk Card](https://raw.githubusercontent.com/GreenNovaEmma/migraine-risk-card/main/docs/card-preview.png)
+![Migraine Risk Card](https://raw.githubusercontent.com/undel-gh/migraine-risk-card/main/docs/card-preview.png)
 
 ## Why I Built This
 
-I'm a chronic migraine sufferer, and over the years I've learned that my migraines don't just appear out of nowhere — they follow the weather. A pressure drop before a storm front, a sudden temperature swing, poor air quality days — these are the invisible triggers that can send me reaching for medication hours later.
+I'm a chronic migraine sufferer, and over the years I've learned that my migraines don't just appear out of nowhere — they follow the weather. A pressure drop before a storm front, a sudden temperature swing, poor air-quality days — these are the invisible triggers that can send me reaching for medication hours later.
 
-Knowing this changed everything for me. If I can see the environmental warning signs *before* symptoms hit, I can take my preemptive medication early and actually get ahead of an attack instead of chasing it. So I built a sensor system in Home Assistant that watches the weather for me and tells me when conditions are stacking up.
+Knowing this changed everything for me. If I can see the environmental warning signs *before* symptoms hit, I can take my preemptive medication early and actually get ahead of an attack instead of chasing it. So I built a system in Home Assistant that watches the weather for me and tells me when conditions are stacking up.
 
 I shared a few screenshots of my dashboard with friends, and then they shared them, and before long people were asking how they could set it up for themselves. So here it is — the same system I rely on every day, packaged up for anyone who wants to take back a little control from their migraines.
 
 I hope it helps you as much as it's helped me.
 
+## What's New in 3.0
+
+**The card is now self-sufficient — the sensor package is optional.** Point any factor at a `weather.*` entity and the card does the rest itself:
+
+- **Pressure and temperature trends** are computed in-card from Home Assistant's own recorder history — no helper sensors, no automations. Point a pressure factor at your barometer *or* a weather entity and it works out the change over 6h/24h for you.
+- **Storms and tomorrow's forecast** come from the live forecast feed (`weather/subscribe_forecast`) — the same mechanism the built-in weather card uses.
+- **Reads weather-entity attributes directly** — temperature, humidity, wind, UV and pressure are pulled from the entity's attributes, so a single `weather.*` entity can feed most of the card.
+- **Unit-aware** — mixes sources freely and normalises them (°F→°C, mmHg/inHg→hPa, m/s / mph / kn→km/h) for scoring while showing each value in its own units.
+- **Translations** — English and Russian, auto-selected from your Home Assistant language, with a manual override in the editor.
+
+The result: everything updates through HACS with one click. The sensor package is still worth installing if you want **server-side scoring, notifications/automations, or the bundled WAQI air-quality sensors** — see [Optional: the sensor package](#optional-the-sensor-package).
+
 ## Features
 
-- **9 Environmental Factors**: Barometric pressure drops (6h & 24h), humidity, temperature extremes, rapid temperature changes, wind speed, UV index, thunderstorm proximity, and air quality (AQI/PM2.5/PM10/ozone)
-- **Composite Risk Score**: 0–22 point scale with four risk levels (Low, Moderate, High, Very High)
-- **Tomorrow's Forecast**: Predicts next-day migraine risk from forecast data
-- **Works with Any Weather Integration**: BOM, OpenWeatherMap, Met.no, Weatherbit, or any provider that creates weather entities
-- **Optional Air Quality**: Connects to WAQI, OpenAQ, or any AQI sensor for enhanced scoring
-- **Configurable Entity Mapping**: Point the card and sensors at whatever entities you have — no hardcoded assumptions about your setup
-- **Dark Theme Design**: Purpose-built dark UI with colour-coded risk indicators and a semicircular gauge
-- **Dual Mode**: Works with the included sensor package (recommended) or standalone with the card computing scores internally
+- **Up to 9 environmental factors** — barometric pressure change (6h & 24h), humidity, temperature extremes, rapid temperature change, wind speed, UV index, thunderstorm proximity, and air quality (AQI)
+- **Composite risk score** on a 0–22 scale with four levels (Low, Moderate, High, Very High)
+- **Tomorrow's forecast** — next-day risk computed from your weather entity's forecast
+- **Works with any weather integration** — Met.no, OpenWeatherMap, Gismeteo, Yandex, BOM, or any provider that creates a `weather.*` entity
+- **Optional air quality** — connect a WAQI/OpenAQ/any AQI sensor for the pollution factor
+- **Show only what you configure** — unconfigured factors simply don't appear, and the gauge maximum adjusts to match
+- **English & Russian UI**, auto-detected — [add your language](#adding-a-language) with a single JSON file
+- **Dark-theme design** with colour-coded tiles and a semicircular gauge
 
 ## Installation
 
-### Step 1: Install the Card via HACS
+### Step 1 — Install the card via HACS
 
-1. Open HACS in your Home Assistant sidebar
-2. Click the three-dot menu → **Custom repositories**
-3. Paste: `https://github.com/GreenNovaEmma/migraine-risk-card`
-4. Set category to **Dashboard**
-5. Click **Add**, then find "Migraine Risk Card" in the Frontend list and install it
-6. Add the resource in **Settings → Dashboards → Resources**:
-   - URL: `/hacsfiles/migraine-risk-card/migraine-risk-card.js`
-   - Type: JavaScript Module
+1. Open **HACS** in the sidebar.
+2. Three-dot menu → **Custom repositories**.
+3. Repository: `https://github.com/undel-gh/migraine-risk-card`, category **Dashboard**.
+4. **Add**, then find **Migraine Risk Card** and click **Download**.
 
-### Step 2: Install the Sensor Package (Recommended)
+> Modern HACS registers the dashboard resource for you — you do **not** need to add a resource manually under *Settings → Dashboards → Resources*. Adding one by hand creates a **second, un-cache-busted copy** of the card, which loads an old version alongside the new one. If your card ever looks out of date or the language selector vanishes, check for a duplicate resource — see [Troubleshooting](#troubleshooting).
 
-The sensor package creates the derived sensors (pressure drops, temperature changes, etc.) that most weather integrations don't provide natively.
+After downloading, hard-refresh your browser (**Ctrl+F5**). Open the browser console (F12) and you should see a single banner: `🧠 Migraine Risk Card v3.2.0`.
 
-> **Before you start:** You **must** already have at least one weather integration configured in Home Assistant. The Migraine Risk Card does not fetch weather data itself — it reads from sensors that your weather integration provides. If you don't have one yet, go to **Settings → Devices & Services → Add Integration** and search for your local weather provider (e.g. Bureau of Meteorology, OpenWeatherMap, Met.no). See [Configuring Data Sources](#configuring-data-sources) below for details on supported integrations.
+### Step 2 — Add the card to a dashboard
 
-1. Make sure packages are enabled in your `configuration.yaml`:
+**Through the UI (easiest):**
+1. Edit your dashboard (pencil icon) → **+ Add Card**.
+2. In the **Custom** section, pick **Migraine Risk Card**.
+3. Fill in the entity mappings in the editor and **Save**.
+
+**YAML — self-sufficient setup (recommended):** one weather entity feeds most factors; add a barometer and an AQI sensor if you have them.
+
+```yaml
+type: custom:migraine-risk-card
+entity_pressure_6h: weather.home        # or a dedicated barometer sensor
+entity_pressure_24h: weather.home       # (the card computes the change from history)
+entity_humidity: weather.home
+entity_temperature: weather.home
+entity_temperature_change: weather.home # computed from 6h of recorder history
+entity_wind_speed: weather.home
+entity_uv_index: weather.home
+entity_storm: weather.home              # thunderstorm from the live forecast
+entity_forecast: weather.home           # tomorrow's risk from the forecast
+entity_air_quality: sensor.waqi_home    # optional — omit to hide the tile
+```
+
+Every factor is optional. Omit a line and that tile disappears and the gauge maximum drops accordingly.
+
+## Configuration Options
+
+| Option | Type | Description |
+|---|---|---|
+| `entity_pressure_6h` | entity | Pressure change over 6h. Give it a barometer or a weather entity; absolute pressure is auto-detected and the change is derived from history. |
+| `entity_pressure_24h` | entity | Pressure change over 24h (as above). |
+| `entity_humidity` | entity | Relative humidity (sensor, or `humidity` attribute of a weather entity). |
+| `entity_temperature` | entity | Current temperature. |
+| `entity_temperature_change` | entity | 6h temperature change. A weather entity or absolute-temperature sensor is fine — the change is computed from history. |
+| `entity_wind_speed` | entity | Wind speed (any unit; normalised to km/h for scoring). |
+| `entity_uv_index` | entity | UV index. |
+| `entity_storm` | entity | Thunderstorm factor. A weather entity uses the live forecast; a sensor is read directly. |
+| `entity_air_quality` | entity | AQI sensor (e.g. WAQI). Omit to hide the factor. |
+| `entity_forecast` | entity | Tomorrow's outlook. A `weather.*` entity is computed in-card; a `sensor.migraine_risk_forecast_tomorrow` from the package is read directly. |
+| `entity_risk_score` | entity | *Integration mode only.* A pre-computed score sensor from the package. **Leave empty for standalone mode** — otherwise the card shows this value instead of its own calculation. |
+| `entity_risk_level` | entity | *Integration mode only.* Pre-computed risk level from the package. |
+| `title` | string | Optional heading shown on the card — handy when you run one card per location. |
+| `displayUnits` | `metric` \| `imperial` | Display units only; scoring is always metric. Default `metric`. |
+| `language` | `auto` \| `en` \| `ru` | UI language. Default `auto` (from Home Assistant). |
+| `theme` | `auto` \| `dark' \| `light` | UI theme. Default `auto` (from Home Assistant). |
+| `translations_path` | string | Override where translation files are served from (only needed for non-standard installs). |
+| `max_score` | number | Override the gauge maximum (integration mode). Leave empty for automatic. |
+| `thresholds` | object | Personal trigger thresholds — see [Calibration](#calibrating-to-your-personal-triggers). |
+
+> **Standalone vs integration mode:** if `entity_risk_score` is set, the card trusts that sensor and ignores its own per-factor scoring. For the self-sufficient setup above, **leave `entity_risk_score` and `entity_risk_level` empty** so the gauge reflects the tiles you configured.
+
+## Data-source notes
+
+A few things worth knowing when choosing what to feed each factor:
+
+- **Pressure — a physical barometer wins.** It reports every minute versus a weather provider's 30–60 min, so a falling front shows up hours earlier. Pressure is spatially smooth and a barometer can live indoors, so it's immune to sun/radiation error. The card reads absolute pressure and derives the change from history — no calibration needed.
+- **Temperature & humidity — trust a good local sensor, but beware radiation error.** A poorly-shielded outdoor sensor that over-reads in morning sun will inflate the temperature factors *and* depress humidity at the same time. Until shielding is sorted, a weather integration is often the safer source. Pick one humidity source and stick with it — providers can disagree by 10%+.
+- **AQI is not in weather entities.** The Home Assistant `weather` domain has no air-quality field — no provider exposes it there. Use a dedicated integration (WAQI, AirVisual, OpenWeatherMap Air Pollution) and point `entity_air_quality` at its sensor. If the nearest monitoring station is far away, consider leaving the factor off rather than scoring someone else's air.
+- **Recorder must be on for the pressure/temperature-change factors.** The card reads history from the recorder, so the chosen entity must not be excluded from recording. If a change factor shows `…` forever, check your `recorder:` `exclude:` config.
+
+## Optional: the sensor package
+
+The bundled `sensor-package/migraine_sensors.yaml` reproduces the scoring **server-side** and adds things the card can't do on its own: notifications and automations, history you can graph, and WAQI air-quality sensors (AQI/PM2.5/PM10/ozone). It's entirely optional in 3.0.
+
+1. Enable packages in `configuration.yaml`:
    ```yaml
    homeassistant:
      packages: !include_dir_named packages
    ```
-2. Download the **latest** sensor package and save it to your `/config/packages/` directory:
-   - **Direct link to latest:** [migraine_sensors.yaml on main branch](https://raw.githubusercontent.com/GreenNovaEmma/migraine-risk-card/main/sensor-package/migraine_sensors.yaml) (right-click → Save As)
-   - Or grab it from the most recent release: [releases page](https://github.com/GreenNovaEmma/migraine-risk-card/releases/latest) → Assets → `migraine_sensors.yaml`
+2. Download the **latest** `migraine_sensors.yaml` and save it to `/config/packages/`:
+   - [migraine_sensors.yaml on main](https://raw.githubusercontent.com/undel-gh/migraine-risk-card/main/sensor-package/migraine_sensors.yaml) (right-click → Save As), or from the [latest release](https://github.com/undel-gh/migraine-risk-card/releases/latest) → Assets.
+   > **Always re-download; don't reuse an old local copy** — older versions had scoring bugs.
+3. **Restart Home Assistant** (not just *Reload Template Entities* — the package registers trigger-based sensors and helpers).
+4. Set your sources under **Settings → Devices & Services → Helpers** — the `Migraine Source: …` helpers. At minimum set **Weather Entity**; leave any you don't have blank.
+5. Point the card at the package's sensors if you want the gauge to match the server-side score exactly:
+   ```yaml
+   entity_risk_score: sensor.migraine_risk_score
+   entity_risk_level: sensor.migraine_risk_level
+   entity_forecast: sensor.migraine_risk_forecast_tomorrow
+   ```
 
-   > **⚠️ Don't reuse an older local copy.** If you previously installed the sensor package and have an old version sitting on your machine, please re-download the latest one — earlier versions had a bug that breaks the risk score on new installs (see [Upgrading from a pre-v2.0.3 install](#upgrading-from-a-pre-v203-install)).
-3. Restart Home Assistant
-4. **Configure your data sources** — tell the sensor package which of your weather entities to use. You have two options:
+The package fetches forecasts with the modern `weather.get_forecasts` action (weather entities no longer expose a `forecast` attribute) and detects thunderstorms from both the forecast and warning/forecast text — English and Russian keywords are recognised.
 
-   **Option A: Through the Home Assistant UI (easiest)**
-   1. Go to **Settings → Devices & Services → Helpers**
-   2. You'll see a list of helpers starting with "Migraine Source:" — these are where you tell the system which of your entities to read from
-   3. Click on each one and enter the entity ID of your matching sensor. For example, click on **"Migraine Source: Pressure"** and type in the entity ID of your pressure sensor (e.g. `sensor.openweathermap_pressure`)
-   4. If you don't have a sensor for a particular helper, just leave it blank — that factor will be skipped
+## Translations
 
-   **Option B: Edit the YAML directly**
-   1. Open `packages/migraine_sensors.yaml` in a text editor
-   2. Find the `input_text:` section near the top
-   3. Set the entity IDs using the HA UI (Settings → Helpers) or via automations/scripts — values persist across restarts
+The UI ships in English and Russian. The language follows your Home Assistant setting automatically; override it per card with `language:` in the config or the **Language** selector in the editor.
 
-5. Sensors will begin populating within ~10 minutes as the pressure and temperature tracking automations run
+Translations live in plain JSON files next to the card:
 
-The table below shows the sensors the package uses, what each one does, and an example of the kind of value it reads. Only the weather entity and a pressure sensor are required — everything else is optional and improves accuracy.
+```
+dist/
+├── migraine-risk-card.js
+└── translations/
+    ├── en.json
+    └── ru.json
+```
 
-| Helper Name | What It Does | Example Value | Required? |
-|---|---|---|---|
-| Migraine Source: Weather Entity | Your main weather integration — provides temperature, humidity, wind as fallbacks | `weather.home` | **Yes** |
-| Migraine Source: Pressure | Barometric pressure — the single most important migraine trigger | `1013.2 hPa` | **Yes** |
-| Migraine Source: Temperature | Current temperature (falls back to weather entity if not set) | `24.2°C` | No |
-| Migraine Source: Humidity | Current humidity (falls back to weather entity if not set) | `59%` | No |
-| Migraine Source: Wind Speed | Current wind speed (falls back to weather entity if not set) | `13 km/h` | No |
-| Migraine Source: UV Index | UV index for sun exposure scoring | `7` | No |
-| Migraine Source: AQI | Air Quality Index for pollution scoring | `42 AQI` | No |
-| Migraine Source: PM2.5 | Fine particulate matter (refines air quality scoring) | `12.3 µg/m³` | No |
-| Migraine Source: PM10 | Coarse particulate matter (refines air quality scoring) | `28.1 µg/m³` | No |
-| Migraine Source: Ozone | Ozone level (refines air quality scoring) | `65 µg/m³` | No |
-| Migraine Source: Weather Warnings | Weather warning/alert sensor for thunderstorm detection | `Severe Thunderstorm Warning` | No |
-| Migraine Source: Forecast Text (Today) | Today's forecast text for thunderstorm/wind keyword detection | `Partly cloudy. Possible thunderstorm...` | No |
-| Migraine Source: Tomorrow Max Temp | Tomorrow's forecast maximum temperature | `32°C` | No |
-| Migraine Source: Tomorrow Min Temp | Tomorrow's forecast minimum temperature | `18°C` | No |
-| Migraine Source: Tomorrow UV Index | Tomorrow's forecast UV index | `9` | No |
-| Migraine Source: Tomorrow Forecast Text | Tomorrow's forecast text for wind/storm detection | `Windy with possible storms...` | No |
-| Migraine Source: Tomorrow Rain Chance | Tomorrow's rain probability (humidity proxy for forecast) | `80%` | No |
+English is also embedded in the card as a guaranteed fallback, so a missing or failed translation file never leaves the UI blank — untranslated keys quietly fall back to English.
 
-### Step 3: Add the Card to Your Dashboard
+### Adding a language
 
-**Option A: Through the UI (easiest)**
-1. Open the dashboard you want to add the card to
-2. Click the **pencil icon** (top right) to enter edit mode
-3. Click **+ Add Card**
-4. Scroll down to the **Custom** section, or search for it, and select **"Migraine Risk Card"**
-5. The card's configuration panel will open — fill in your entity mappings and click **Save**
+No JavaScript knowledge required for the translation itself:
 
-**Option B: YAML configuration**
+1. Copy `dist/translations/en.json` to `dist/translations/<code>.json` (ISO 639-1, e.g. `de.json`).
+2. Translate the values — keep every key exactly as it is.
+3. Add the code to `AVAILABLE_LANGS` near the top of `src/migraine-risk-card.js` (and copy `src/` to `dist/`).
+4. Open a PR. CI checks that your file covers every key in `en.json` and that `AVAILABLE_LANGS` matches the shipped files.
 
-If you prefer YAML, click "Show code editor" in the card config panel and paste:
+> **Packaging note:** because the card ships more than one file, `hacs.json` deliberately has **no** `filename` key — that makes HACS download the whole `dist/` directory, translations included. Keep every shipped asset inside `dist/`.
+
+## Calibrating to Your Personal Triggers
+
+The default thresholds are research-based averages, but migraine triggers are highly individual — one person reacts to a 4 hPa pressure drop, another only past 10. Since v3.1 every scoring threshold can be tuned to your own history, no YAML editing required.
+
+**In the card editor (easiest):** open the card's visual editor and expand **Calibration — personal thresholds**. Each factor shows one box per point step; the placeholder is the value currently in effect (your `input_number` helper if you have one, otherwise the research default). Leave a box empty to keep using that value.
+
+**With the sensor package installed:** go to **Settings → Devices & Services → Helpers** and search "Migraine Threshold". You'll find 20 sliders — the point steps for every factor (e.g. *Pressure 6h → 1 pt*, default 4 hPa). Change a value and both the server-side scoring **and the card** pick it up immediately: the card reads the same helpers automatically, so one calibration applies everywhere.
+
+**Without the package:** create `input_number` helpers with the well-known IDs (`input_number.migraine_threshold_pressure_6h_1` … see the table below), or set thresholds directly in the card config:
 
 ```yaml
 type: custom:migraine-risk-card
-entity_risk_score: sensor.migraine_risk_score
-entity_risk_level: sensor.migraine_risk_level
-entity_forecast: sensor.migraine_risk_forecast_tomorrow
-entity_pressure_6h: sensor.migraine_pressure_drop_6h
-entity_pressure_24h: sensor.migraine_pressure_drop_24h
-entity_humidity: sensor.migraine_factor_humidity
-entity_temperature: sensor.migraine_factor_temperature
-entity_temperature_change: sensor.migraine_factor_temperature_change
-entity_wind_speed: sensor.migraine_factor_wind
-entity_uv_index: sensor.migraine_factor_uv_sun
-entity_storm: sensor.migraine_factor_thunderstorm_nearby
-entity_air_quality: sensor.migraine_factor_air_quality
+# ...
+thresholds:
+  pressure_6h: [3, 5, 7, 9]   # point ladder: ≥3 → 1pt, ≥5 → 2 … 
+  humidity_low: 25             # dry-air trigger
+  uv: [5, 7]
 ```
 
-All factor entities are optional — the card only displays what you configure. If you installed the sensor package with the default settings, the entity names above will work without any changes.
+Card config takes precedence over helpers; helpers take precedence over defaults. Available keys and their defaults:
 
-## Upgrading from a pre-v2.0.3 install
+| Key | Default | Meaning |
+|---|---|---|
+| `pressure_6h` | `[4, 6, 8, 10]` | hPa drop over 6h → 1/2/3/4 pts |
+| `pressure_24h` | `[6, 10, 14]` | hPa drop over 24h → 1/2/3 pts |
+| `humidity_low` | `30` | below this % → 1 pt (dry air) |
+| `humidity_high` | `80` | above this % → 2 pts |
+| `temp_hot` | `30` | above this °C → 2 pts |
+| `temp_cold` | `5` | below this °C → 2 pts |
+| `temp_change` | `[5, 8]` | °C change over 6h → 1/2 pts |
+| `wind` | `[35, 50]` | km/h → 1/2 pts |
+| `uv` | `[6, 8]` | UV index → 1/2 pts |
+| `aqi` | `[50, 100, 150]` | AQI above step → 1/2/3 pts |
 
-> **⚠️ Read this if you installed any version before v2.0.3.**
+Matching helper IDs: array keys get `_1`, `_2`, … suffixes (`migraine_threshold_uv_1`), scalar keys use the name as-is (`migraine_threshold_humidity_low`).
 
-Versions before v2.0.3 had a bug where Home Assistant sluggified `name: "Migraine Temperature (°C)"` into `sensor.migraine_temperature_degc` (and similarly `sensor.migraine_wind_speed_km_h`), but the scoring templates referenced `sensor.migraine_temperature` / `sensor.migraine_wind_speed`. The result: temperature and wind factors silently returned 0 and your risk score was wrong.
+**How to calibrate:** when a migraine hits, note the card's factor tiles (or the `sensor.migraine_risk_score` attributes). If attacks reliably arrive at pressure drops the card scores 0–1, lower the pressure steps; if UV never seems to matter for you, raise the UV steps so the factor stays quiet. Adjust one factor at a time and give each change a couple of weeks of history before the next tweak.
 
-**v2.0.3 fixes the YAML** so fresh installs get the correct entity IDs. But Home Assistant locks `unique_id → entity_id` mappings in the entity registry on first registration, so **just updating the YAML doesn't rename your existing entities** — you need a one-time manual rename.
+### Multiple locations
 
-### One-time fix (preserves history)
-
-For each affected entity:
-
-1. **Settings → Devices & Services → Entities**
-2. Search `migraine_temperature_degc`
-3. Click it → click the cog icon (top right)
-4. Change **Entity ID** from `sensor.migraine_temperature_degc` to `sensor.migraine_temperature`
-5. Click **Update**
-6. Repeat for wind: search `migraine_wind_speed_km_h` → rename to `sensor.migraine_wind_speed`
-7. Reload templates (**Developer Tools → YAML → Template Entities**) or restart HA
-
-After that, the v2.0.3 YAML works as intended — templates find the right entities, the temperature-baseline automation runs, and the risk score scores correctly.
-
-**Not sure if you're affected?** Go to **Developer Tools → States** and search `migraine_temperature`. If you see `sensor.migraine_temperature_degc` (with the `_degc` suffix), you need the fix. If you see `sensor.migraine_temperature` cleanly, you're fine — either you're on a fresh v2.0.3+ install or you already manually renamed it.
-
-## Configuring Data Sources
-
-The sensor package uses `input_text` helpers to store your entity mappings. This makes it easy to change your data sources at any time without editing YAML — just update the helper value in the UI and the sensors will pick up the new source automatically.
-
-### Prerequisites
-
-You need **at least one weather integration** installed in Home Assistant. The card doesn't fetch weather data directly — it reads from sensors created by your weather integration. If you haven't set one up yet:
-
-1. Go to **Settings → Devices & Services → Add Integration**
-2. Search for your preferred weather provider and follow the setup prompts
-3. Once configured, you'll find new weather entities in **Developer Tools → States** (search for `weather.` or `sensor.`)
-
-### Finding Your Entity IDs
-
-To find the entity IDs for your weather sensors:
-
-1. Go to **Developer Tools → States** in your Home Assistant
-2. In the filter box, type `weather.` to see your weather entities, or `sensor.` followed by your integration name (e.g. `sensor.openweathermap`)
-3. Note down the entity IDs you want to use
-
-Here are some common examples for popular integrations:
-
-| Data Source | BOM (Australia) | OpenWeatherMap | Met.no |
-|---|---|---|---|
-| Weather entity | `weather.YOUR_LOCATION` | `weather.openweathermap` | `weather.home` |
-| Pressure | `sensor.YOUR_STATION_pressure` | `sensor.openweathermap_pressure` | (use weather entity) |
-| UV Index | `sensor.YOUR_LOCATION_uv_max_index_0` | `sensor.openweathermap_uv_index` | (not available) |
-| AQI | `sensor.YOUR_LOCATION_air_quality_index` | — | — |
-
-> **Tip:** If your weather integration doesn't provide a dedicated pressure or temperature sensor, don't worry. The system will fall back to reading those values from the weather entity's attributes. Just make sure you've set the **Weather Entity** helper and the fallback will kick in automatically.
+Each card instance keeps its own history cache and forecast subscription, so you can put several cards on one dashboard — one per home — each pointing at a different weather entity. Give each a `title:` to tell them apart. Threshold helpers are global (they describe *you*, not the house), but a per-card `thresholds:` block overrides them if a location really needs different values.
 
 ## How the Scoring Works
 
-The system evaluates 9 environmental factors, each scored on a 0–2 or 0–4 point scale:
+Nine factors, each scored on a 0–2 or 0–4 scale:
 
-| Factor | Max Points | Trigger Thresholds |
+| Factor | Max | Thresholds |
 |---|---|---|
-| Pressure drop (6h) | 4 | ≥4hPa: 1pt, ≥6: 2pts, ≥8: 3pts, ≥10: 4pts |
-| Pressure drop (24h) | 3 | ≥6hPa: 1pt, ≥10: 2pts, ≥14: 3pts |
-| Humidity | 2 | <30%: 1pt, >80%: 2pts |
-| Temperature extreme | 2 | >30°C or <5°C: 2pts |
-| Temperature change (6h) | 2 | ≥5°C: 1pt, ≥8°C: 2pts |
-| Wind speed | 2 | ≥35km/h: 1pt, ≥50km/h: 2pts |
-| UV index | 2 | ≥6: 1pt, ≥8: 2pts |
-| Thunderstorm | 2 | Forecast: 1pt, Active warning: 2pts |
-| Air quality (AQI) | 3 | AQI 51–100: 1pt, 101–150: 2pts, 151+: 3pts (with PM2.5/PM10/ozone nudge) |
+| Pressure change (6h) | 4 | ≥4 hPa: 1 · ≥6: 2 · ≥8: 3 · ≥10: 4 |
+| Pressure change (24h) | 3 | ≥6 hPa: 1 · ≥10: 2 · ≥14: 3 |
+| Humidity | 2 | <30%: 1 · >80%: 2 |
+| Temperature extreme | 2 | >30 °C or <5 °C: 2 |
+| Temperature change (6h) | 2 | ≥5 °C: 1 · ≥8 °C: 2 |
+| Wind speed | 2 | ≥35 km/h: 1 · ≥50 km/h: 2 |
+| UV index | 2 | ≥6: 1 · ≥8: 2 |
+| Thunderstorm | 2 | Forecast: 1 · Active/within 3h: 2 |
+| Air quality (AQI) | 3 | 51–100: 1 · 101–150: 2 · 151+: 3 |
 | **Total** | **22** | |
 
-**Risk Levels:**
-- **Low** (0–3): Minimal environmental triggers
-- **Moderate** (4–7): Some factors present — stay aware
-- **High** (8–11): Multiple triggers active — take preventive action
-- **Very High** (12+): Significant environmental stress — strong migraine risk
+**Risk levels:** Low (0–3) · Moderate (4–7) · High (8–11) · Very High (12+). The gauge maximum reflects only the factors you actually configure. All thresholds above are the defaults — see [Calibrating to Your Personal Triggers](#calibrating-to-your-personal-triggers).
+
+## Troubleshooting
+
+**Card looks out of date — old language/values, `…°C` says "cloudy", pressure reads ~980 as a "change".** These are the fingerprints of an **older version loading alongside the new one**. Open the console (F12): if you see **two** `Migraine Risk Card` banners, you have a duplicate resource.
+- Go to **Settings → Dashboards → ⋮ → Resources** (enable *Advanced Mode* in your profile if the menu is hidden).
+- Keep the HACS-managed entry — its URL ends in `?hacstag=…` (the tag busts the cache on every update). **Delete** any duplicate `migraine-risk-card.js` **without** a `hacstag`, and remove any stray `/config/www/…migraine…` file that isn't under `www/community/migraine-risk-card/`.
+- **Ctrl+F5.** You should now see a single banner.
+
+**A pressure/temperature-change tile shows `…` and never resolves.** The source entity is excluded from the recorder. Remove it from `recorder:` `exclude:`, or give the factor a sensor that is recorded.
+
+**AQI shows `0 AQI`.** No air-quality source is configured. Add a WAQI (or similar) integration via **Settings → Devices & Services → Add Integration** (it needs an aqicn.org token, added through the UI — the old YAML `waqi:` platform was removed), then set `entity_air_quality`. Or omit the option to hide the tile.
+
+**A factor shows `?`.** The configured entity ID doesn't exist — check for a typo or a renamed entity.
+
+**Translations folder not being downloaded during update from 3.1.1 to 3.2.1.** Reinstall the card.
+- Go to HACS, delete the card.
+- Delete custom repository.
+- Refresh HACS.
+- Add custom repository.
+- Install latest build of the card.
 
 ## Scientific Background
 
-Research has shown that several environmental factors can trigger migraines:
+Several environmental factors are associated with migraine onset:
 
-- **Barometric pressure drops** are the most studied environmental trigger. A drop of 5–10 hPa over 6–24 hours is associated with increased migraine frequency (Kimoto et al., 2011; Okuma et al., 2015).
-- **High humidity** (>80%) and **extreme temperatures** have been linked to migraine onset (Hoffmann et al., 2015).
-- **Rapid temperature changes** can trigger vasodilation/vasoconstriction cycles.
-- **Thunderstorms** bring sudden pressure changes, electromagnetic activity, and increased sferics.
-- **Poor air quality** (high PM2.5, ozone) is associated with increased headache prevalence (Szyszkowicz et al., 2009).
+- **Barometric pressure drops** are the most-studied trigger; a 5–10 hPa fall over 6–24 h correlates with increased frequency (Kimoto et al., 2011; Okuma et al., 2015).
+- **High humidity** and **temperature extremes** are linked to onset (Hoffmann et al., 2015).
+- **Rapid temperature change** can drive vasodilation/constriction cycles.
+- **Thunderstorms** bring sharp pressure changes and increased sferics.
+- **Poor air quality** (PM2.5, ozone) correlates with higher headache prevalence (Szyszkowicz et al., 2009).
 
-This card aggregates these factors into a single actionable score, so you can take preventive measures before symptoms start.
+The card aggregates these into a single actionable score so you can act before symptoms start.
+
+> This card is an informational aid, not a medical device. It doesn't diagnose or predict migraines and shouldn't replace professional medical advice.
 
 ## Development
 
-The card source lives at [`src/migraine-risk-card.js`](src/migraine-risk-card.js). The file in `dist/` is the built artefact shipped to users — for now it's a straight copy of `src/`, no bundler involved. To release a change: edit `src/`, bump `CARD_VERSION`, copy to `dist/`, and tag.
+The card source is [`src/migraine-risk-card.js`](src/migraine-risk-card.js); [`dist/`](dist/) is the shipped copy (no bundler — a straight copy of `src/`). To release: edit `src/`, bump `CARD_VERSION`, copy to `dist/`, commit, and tag. CI (`.github/workflows/validate.yml`) runs HACS validation and checks that `dist/` matches `src/`; `release.yml` attaches the card and sensor package to each published release.
 
-## Support
+Feel free to submit PR with translations. Just pick en.json, translate it and send PR with new language.
 
-If you find this card useful, consider buying me a coffee:
+Project was made using Claude AI.
 
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-yellow?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/emma_j)
+> Keep `CARD_VERSION` in step with the release tag — the console banner and the HACS version should agree.
 
 ## Licence
 
-MIT Licence — see [LICENCE](LICENCE) for details.
+MIT Licence — see [LICENCE](LICENSE) for details.

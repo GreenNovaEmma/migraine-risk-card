@@ -1,0 +1,68 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+jobs:
+  hacs:
+    name: HACS validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: HACS validation
+        uses: hacs/action@main
+        with:
+          category: plugin
+
+  dist-sync:
+    name: dist matches src
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check dist/ is in sync with src/
+        run: |
+          if ! diff -q src/migraine-risk-card.js dist/migraine-risk-card.js; then
+            echo "::error::dist/migraine-risk-card.js is out of sync with src/. Run: cp src/migraine-risk-card.js dist/"
+            exit 1
+          fi
+
+      - name: Syntax check
+        run: node --check dist/migraine-risk-card.js
+
+      - name: Validate translations
+        run: |
+          node -e "
+          const fs = require('fs');
+          const dir = 'dist/translations';
+          const files = fs.readdirSync(dir).filter(f => f.endsWith('.json'));
+          const keys = (o, p = '') => Object.entries(o).reduce((s, [k, v]) => {
+            s.add(p + k);
+            if (v && typeof v === 'object') keys(v, p + k + '.').forEach(x => s.add(x));
+            return s;
+          }, new Set());
+          const en = keys(JSON.parse(fs.readFileSync(dir + '/en.json')));
+          let bad = 0;
+          for (const f of files) {
+            const k = keys(JSON.parse(fs.readFileSync(dir + '/' + f)));
+            const missing = [...en].filter(x => !k.has(x));
+            const extra = [...k].filter(x => !en.has(x));
+            if (missing.length) { console.error('::error::' + f + ' missing keys: ' + missing.join(', ')); bad = 1; }
+            if (extra.length) { console.error('::warning::' + f + ' has unknown keys: ' + extra.join(', ')); }
+          }
+          const src = fs.readFileSync('dist/migraine-risk-card.js', 'utf8');
+          const listed = /const AVAILABLE_LANGS = \[([^\]]*)\]/.exec(src)[1].match(/'([a-z-]+)'/g).map(s => s.replace(/'/g, '')).sort();
+          const shipped = files.map(f => f.replace('.json', '')).sort();
+          if (listed.join() !== shipped.join()) {
+            console.error('::error::AVAILABLE_LANGS [' + listed + '] does not match shipped files [' + shipped + ']');
+            bad = 1;
+          }
+          process.exit(bad);
+          "
